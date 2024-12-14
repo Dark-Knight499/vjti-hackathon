@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apna Bank - Your Trusted Banking Partner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .hero {
+            margin-top: 4rem;
+            padding: 6rem 5%;
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            background: linear-gradient(to right, #f8f9fa 50%, #ffffff 50%);
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            color: #2E7D32;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #666;
+        }
+
+        .hero-image {
+            flex: 1;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+        }
+
+        .features {
+            padding: 5rem 5%;
+            background: #f8f9fa;
+        }
+
+        .features h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #2E7D32;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h3 {
+            color: #4CAF50;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background: #2E7D32;
+            color: white;
+            padding: 2rem 5%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Apna Bank</div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a href="/login" class="btn btn-primary">Login</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Banking Made Simple, Secure & Smart</h1>
+            <p>Experience the next generation of digital banking with Apna Bank. We provide innovative solutions for all your financial needs.</p>
+            <div class="cta-buttons">
+                <a href="/register" class="btn btn-primary">Open Account</a>
+                <a href="#learn-more" class="btn btn-secondary">Learn More</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://img.freepik.com/free-vector/people-taking-out-money-from-bank-concept-illustration_114360-12881.jpg" alt="Banking Illustration">
+        </div>
+    </section>
+
+    <section class="features">
+        <h2>Why Choose Apna Bank?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Secure Banking</h3>
+                <p>State-of-the-art security measures to protect your financial data and transactions.</p>
+            </div>
+            <div class="feature-card">
+                <h3>24/7 Support</h3>
+                <p>Round-the-clock customer support to assist you with any banking needs.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Digital First</h3>
+                <p>Advanced digital solutions for seamless banking experience.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Apna Bank. All rights reserved.</p>
+    </footer>
+</body>
+</html>
