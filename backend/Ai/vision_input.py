@@ -13,6 +13,21 @@ from langchain_google_genai import GoogleGenerativeAI
 import asyncio
 import json
 
+
+def vision_input(state: dict):
+    llm = state["llm"]
+    action = state["action"]
+    if action == "login":
+        return get_login_info(llm)
+    elif action == "otp":
+        return get_otp(llm)
+    elif action == "transfer":
+        return get_transfer_details(llm)
+    elif action == "card":
+        return get_card_details(llm)
+    else:
+        return "Invalid action"
+
 def get_login_info(llm) -> dict:
     say("Please take a picture of your bank account number and password")
     asyncio.run(CameraCapture().capture_image())

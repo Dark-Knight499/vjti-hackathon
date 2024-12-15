@@ -75,5 +75,13 @@ def get_all_info(account_number):
     except Exception as e:
         return jsonify({"error": str(e)})
 
+@app.route('/api/get_all_cards/<int:account_number>')
+def get_all_cards(account_number):
+    try:
+        cursor.execute("SELECT CardNumber FROM Cards JOIN Accounts ON Cards.AccountID = Accounts.AccountID WHERE Accounts.AccountNumber = %s", (account_number, ))
+        return jsonify({"cards": cursor.fetchall()})
+    except Exception as e:
+        return jsonify({"error": str(e)})
+    
 if __name__ == '__main__':
     app.run(debug=True)
