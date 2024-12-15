@@ -100,6 +100,8 @@ class CameraCapture:
             self.stop_event.set()
             camera_thread.join()
             await voice_task
+            print(filename)
+            return filename
 
 if __name__ == "__main__":
     capture = CameraCapture()
