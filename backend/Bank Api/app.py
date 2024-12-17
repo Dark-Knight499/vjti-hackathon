@@ -19,8 +19,8 @@ def index():
 @app.route('/api/balance/<int:account_number>')
 def get_balance(account_number):
     try:
-        cursor.execute("SELECT * FROM Accounts WHERE AccountNumber = %s", (account_number, ))
-        return jsonify({"balance": cursor.fetchall()})
+        cursor.execute("SELECT Balance FROM Accounts WHERE AccountNumber = %s", (account_number, ))
+        return jsonify(cursor.fetchall())
     except Exception as e:
         return jsonify({"error": str(e)})
 
@@ -36,7 +36,7 @@ def cancel_card(account_number, card_number):
 @app.route('/api/transactions/<int:account_number>')
 def get_transactions(account_number):
     try:
-        cursor.execute("SELECT * FROM Transactions WHERE AccountID = %s", (account_number, ))
+        cursor.execute("SELECT * FROM Transactions JOIN Accounts ON Transactions.AccountID = Accounts.AccountID WHERE Accounts.AccountNumber = %s", (account_number, ))
         return jsonify({"transactions": cursor.fetchall()})
     except Exception as e:
         return jsonify({"error": str(e)})
@@ -85,3 +85,4 @@ def get_all_cards(account_number):
     
 if __name__ == '__main__':
     app.run(debug=True)
+

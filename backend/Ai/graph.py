@@ -32,8 +32,10 @@ def choose(state: State) -> str:
     elif "camera" in method:
         state["action"] = "login"
         return "camera"
-    
 
+def you_have_made_it(state: State) -> str:
+    say("You have successfully made it to the end")
+    
 graph_builder = StateGraph(State)
 graph_builder.add_node("__init__", __init__)
 graph_builder.add_node("voice_input", voice_input)
@@ -97,7 +99,7 @@ input_data = {
 }
 
 # Invoke the graph
-result = graph.invoke(input_data)
+result = graph.get_prompts()
 
 # Print the result
 print(result)
