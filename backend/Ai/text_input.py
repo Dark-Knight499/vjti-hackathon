@@ -1,18 +1,26 @@
 import json
 from utils.voice import say
-
-def text_input(state: dict):
+from graph_state import State
+def text_input(state: State) -> State:
+    llm = state["llm"]
     action = state["action"]
     if action == "login":
-        return get_login_info()
+        login_info = get_login_info()
+        state["account_number"] = login_info.get("account_number")
+        state["password"] = login_info.get("password")
     elif action == "otp":
-        return get_otp()
+        otp_info = get_otp()
+        state["otp"] = otp_info.get("otp")
     elif action == "transfer":
-        return get_transfer_details()
+        transfer_details = get_transfer_details()
+        state["transfer_account_number"] = transfer_details.get("account_number")
+        state["amount"] = transfer_details.get("amount")
     elif action == "card":
-        return get_card_details()
+        card_details = get_card_details()
+        state["card_number"] = card_details.get("card_number")
     else:
-        return "Invalid action"
+        state["error"] = "Invalid action"
+    return state
 
 def get_login_info() -> dict:
     say("Please enter your bank account number")

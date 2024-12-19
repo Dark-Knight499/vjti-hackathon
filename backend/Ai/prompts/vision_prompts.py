@@ -26,6 +26,7 @@ OUTPUT JSON ONLY NO TEXT ONLY JSON AS IN EXAMPLE ABOVE JUST THE OBJECT NO OTHER 
 parse_transfer_details_prompt = """
 Extract the account number and amount from the following text, which has been extracted from the given image, and return it as a JSON object.
 Ensure that both the account number and amount are accurately identified and formatted correctly.
+The following text was extracted from the image please parse into the below json format
 Text: {text}
 
 Output Format:

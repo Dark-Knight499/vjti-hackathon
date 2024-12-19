@@ -8,7 +8,7 @@ def say(text:str)->None:
 
 def listen()->str:
     recognizer = sr.Recognizer()
-    recognizer.pause_threshold = 1.0  # Increase pause time to 1 second
+    # recognizer.pause_threshold = 1.0  # Increase pause time to 1 second
     with sr.Microphone() as source:
         print("Listening...")
         audio = recognizer.listen(source)

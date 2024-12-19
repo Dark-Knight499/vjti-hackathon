@@ -6,21 +6,28 @@ from prompts.voice_prompts import (parse_bank_details_prompt,
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_google_genai import GoogleGenerativeAI
+from graph_state import State
 
-
-def voice_input(state: dict):
+def voice_input(state: State) -> State:
     llm = state["llm"]
     action = state["action"]
     if action == "login":
-        return get_login_info(llm)
+        login_info = get_login_info(llm)
+        state["account_number"] = login_info.get("account_number")
+        state["password"] = login_info.get("password")
     elif action == "otp":
-        return get_otp(llm)
+        otp_info = get_otp(llm)
+        state["otp"] = otp_info.get("otp")
     elif action == "transfer":
-        return get_transfer_details(llm)
+        transfer_details = get_transfer_details(llm)
+        state["transfer_account_number"] = transfer_details.get("account_number")
+        state["amount"] = transfer_details.get("amount")
     elif action == "card":
-        return get_card_details(llm)
+        card_details = get_card_details(llm)
+        state["card_number"] = card_details.get("card_number")
     else:
-        return "Invalid action"
+        state["error"] = "Invalid action"
+    return state
     
 
 #hande puncuation and face value of puncuation after words

@@ -1,178 +1,58 @@
-import requests
-from langchain_core.tools import tool
-import json
-from twilio.rest import Client
-import gtts as gTTS
-import os
+from utils import bank
+from graph_state import State
+from langchain_core.messages import AIMessage
+from input_graph import input_graph
+from langchain_google_genai import GoogleGenerativeAI
 from dotenv import load_dotenv
 load_dotenv()
-@tool
-def get_account_details(account_number: str) -> dict:
-    """Gets the details of a bank account.
-    Args:
-        account_number: The account number to get details for
-    Returns:
-        Dictionary with account details or error message
-    """
-    try:
-        response = requests.get(f"http://localhost:5000/api/balance/{account_number}")
-        data = response.json()
-        if "error" in data:
-            return {"error": "Account not found"}
-        return data
-    except Exception as e:
-        return {"error": str(e)}
+
+def get_balance(state: State) -> State:
+    balance = bank.get_balance(state["account_number"])
+    state["messages"] = [AIMessage(balance)]
+    return state
+
+def transfer(state: State) -> State:
+    state["action"] = "transfer"
+    state = dict(input_graph.invoke(state))
+    transfer_status = bank.transfer(state["account_number"], state["transfer_account_number"], state["amount"])
+    state["messages"] = [AIMessage(transfer_status)]
+    return state
+
+def get_transaction_details(state: State) -> State:
+    transaction_details = bank.get_transaction_details(state["account_number"])
+    state["messages"] = [AIMessage(transaction_details)]
+    return state
 
 
-@tool
-def get_account_balance(account_number: str) -> dict:
-    """Gets the details of a bank account.
-    Args:
-        account_number: The account number to get details for
-    Returns:
-        Dictionary with account details or error message
-    """
-    try:
-        response = requests.get(f"http://localhost:5000/api/balance/{account_number}")
-        data = response.json()
-        if "error" in data:
-            return {"error": "Account not found"}
-        return data
-    except Exception as e:
-        return {"error": str(e)}
+def get_card_details(state: State) -> State:
+    card_details = bank.get_card_details(state["account_number"], state["card_number"])
+    state["messages"] = [AIMessage(card_details)]
+    return state
 
-@tool
-def get_transaction_details(account_number: str) -> dict:
-    """Gets the details of transactions for a given account.
-    Args:
-        account_number: The account number to get transaction details for
-    Returns:
-        Dictionary with transaction details or error message
-    """
-    try:
-        response = requests.get(f"http://localhost:5000/api/transactions/{account_number}")
-        data = response.json()
-        if "error" in data:
-            return {"error": "Transactions not found"}
-        return data
-    except Exception as e:
-        return {"error": str(e)}
 
-@tool
-def get_card_details(account_number: str, card_number: str) -> dict:
-    """Gets the details of a card associated with a given account.
-    Args:
-        account_number: The account number to check
-        card_number: The card number to get details for
-    Returns:
-        Dictionary with card details or error message
-    """
-    try:
-        response = requests.get(f"http://localhost:5000/api/get_all_cards/{account_number}")
-        data = response.json()
-        
-        if "error" in data:
-            return {"error": "Account not found"}
+def get_full_account_details(state: State) -> State:
+    full_account_details = bank.get_full_account_details(state["account_number"])
+    state["messages"] = [AIMessage(full_account_details)]
+    return state
 
-        cards = data.get("cards", [])
-        for card in cards:
-            if str(card[0]) == str(card_number):
-                return {"card_details": card}
-        return {"error": "Card not found"}
-    except Exception as e:
-        return {"error": str(e)}
+def send_whatsapp(state: State) -> State:
+    status = bank.send_whatsapp()
+    state["messages"] = [AIMessage(status)]
 
-@tool
-def get_full_account_details(account_number: str) -> dict:
-    """Gets the full details of an account.
-    Args:
-        account_number: The account number to get details for
-    Returns:
-        Dictionary with full account details or error message
-    """
-    try:
-        response = requests.get(f"http://localhost:5000/api/get_all_info/{account_number}")
-        data = response.json()
-        if "error" in data:
-            return {"error": "Account not found"}
-        return data
-    except Exception as e:
-        return {"error": str(e)}
+    return state
 
-@tool
-def save_audio(account_number: str) -> dict:
-    """Saves an audio file with the transaction details.
-    Args:
-        account_number: The account number to get transaction details for
-    Returns:
-        Dictionary with the status of the operation or error message
-    """
-    try:
-        # Get transaction details
-        transaction_details = get_transaction_details(account_number)
-        if "error" in transaction_details:
-            return {"error": "Failed to get transaction details"}
 
-        # Extract transaction details
-        transactions = transaction_details.get('transactions', [])
-        if not transactions:
-            return {"error": "No transactions found"}
-
-        # Assuming we want to save details of the latest transaction
-        latest_transaction = transactions[0]
-
-        # Create the message text
-        message_text = (
-            f"Transaction ID: {latest_transaction[0]}, "
-            f"Account ID: {latest_transaction[1]}, "
-            f"Transaction Type: {latest_transaction[2]}, "
-            f"Amount: {latest_transaction[3]}, "
-            f"Timestamp: {latest_transaction[4]}, "
-            f"Description: {latest_transaction[5]}"
-        )
-
-        # Convert text to speech
-        tts = gTTS.gTTS(text=message_text, lang='en')
-        audio_file = f"transaction_{account_number}.mp3"
-        tts.save(audio_file)
-
-        return {"status": "Audio saved", "file": audio_file}
-    except Exception as e:
-        return {"error": str(e)}
-
-@tool
-#wrie down a function to send whatsapp message
-def send_whatsapp()->dict:
-    """ Sends a WhatsApp message with transaction details.
-    Args:
-        None
-    Returns:
-        None
-    """
-    try:
-        account_sid = os.getenv("TWILIO_ACCOUNT_SID")
-        auth_token = os.getenv("TWILIO_AUTH_TOKEN")
-        client = Client(account_sid, auth_token)
-
-        message = client.messages.create(
-            from_='whatsapp:+14155238886',
-            body='Transaction details',
-            to=os.getenv("WHATSAPP_NUMBER"),
-            media_url=["https://github.com/Dark-Knight499/media-files/raw/refs/heads/main/transaction_1.mp3"]
-        )
-
-        print(message.sid)
-        return {"status": "Message sent"}
-    except Exception as e:
-        return {"error": str(e)}
 if __name__ == "__main__":
-    try:
-        from dotenv import load_dotenv
-        load_dotenv()
-        # print(get_account_balance("1234567890123456"))
-        # print(get_transaction_details("1234567890123456"))
-        # print(get_card_details("1234567890123456", "1234567890123456"))
-        # print(get_full_account_details("1234567890123456"))
-        print(send_whatsapp.invoke({}))
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    input_data = {
+    "llm": GoogleGenerativeAI(model="gemini"),
+    "account_number": 4567890123456789,
+    "transfer_account_number": None,
+    "amount": None,
+    "password": None,
+    "otp": None,
+    "action": "login",
+    "card_number": None,
+    "messages": []
+}
+    result = transfer(input_data)
+    print(result)

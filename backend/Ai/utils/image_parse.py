@@ -8,7 +8,7 @@ def image_parse(image_path:str)->str:
         verbose=False,
         result_type="markdown",
         premium_mode=True)
-    parsed_doc = parser.load_data(image_path)
+    parsed_doc = parser.load_data(r"C:\Harsh\vjti-hackathon\backend\Ai\captured_image.jpg")
     print(parsed_doc[0])
     return parsed_doc[0]
 if __name__ == "__main__":
